@@ -1,0 +1,188 @@
+package com.checkmatex.ui;
+
+import javax.swing.*;
+import javax.swing.border.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class SidePanel extends JPanel {
+
+    // ── Design Tokens ────────────────────────────────────────
+    static final Color BG_MAIN      = new Color(0x1E1E1E);
+    static final Color BG_CARD      = new Color(0x2A2A3A);
+    static final Color ACCENT_GOLD  = new Color(0xF0C040);
+    static final Color TEXT_LIGHT   = new Color(0xE0E0E0);
+    static final Color BORDER_COLOR = new Color(0x44445A);
+
+    // Button colours
+    static final Color BTN_NEW_GAME = new Color(0x2E86DE);
+    static final Color BTN_SAVE     = new Color(0x27AE60);
+    static final Color BTN_LOAD     = new Color(0x8E44AD);
+    static final Color BTN_UNDO     = new Color(0xE67E22);
+    static final Color BTN_REDO     = new Color(0xF39C12);
+
+    private GameFrame gameFrame;
+    public TimerPanel timerPanel;
+    public CapturedPanel capturedPanel;
+    private JTextArea moveListArea;
+
+    public SidePanel(GameFrame gameFrame) {
+        this.gameFrame = gameFrame;
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBackground(BG_MAIN);
+        setPreferredSize(new Dimension(250, 600));
+        setBorder(new EmptyBorder(12, 10, 12, 10));
+
+        // ── Buttons ──────────────────────────────────────────
+        add(buildSectionLabel("CONTROLS"));
+        add(Box.createVerticalStrut(8));
+        add(buildButtonPanel());
+        add(Box.createVerticalStrut(16));
+
+        // ── Timer / Turn Card ─────────────────────────────────
+        timerPanel = new TimerPanel();
+        add(timerPanel);
+        add(Box.createVerticalStrut(16));
+
+        // ── Captured Pieces Card ──────────────────────────────
+        capturedPanel = new CapturedPanel();
+        add(capturedPanel);
+        add(Box.createVerticalStrut(16));
+
+        // ── Move History Card ─────────────────────────────────
+        add(buildMoveHistoryCard());
+    }
+
+    // ── Section label helper ──────────────────────────────────
+    private JLabel buildSectionLabel(String text) {
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(new Font("SansSerif", Font.BOLD, 11));
+        lbl.setForeground(new Color(0x888899));
+        lbl.setAlignmentX(LEFT_ALIGNMENT);
+        return lbl;
+    }
+
+    // ── Button panel (2-column grid, plus single "New Game") ─
+    private JPanel buildButtonPanel() {
+        JButton newBtn  = makeButton("New Game", BTN_NEW_GAME);
+        JButton saveBtn = makeButton("Save",     BTN_SAVE);
+        JButton loadBtn = makeButton("Load",     BTN_LOAD);
+        JButton undoBtn = makeButton("⟵ Undo",  BTN_UNDO);
+        JButton redoBtn = makeButton("Redo ⟶",  BTN_REDO);
+
+        newBtn .addActionListener(e -> gameFrame.confirmNewGame());
+        saveBtn.addActionListener(e -> gameFrame.saveGame());
+        loadBtn.addActionListener(e -> gameFrame.loadGame());
+        undoBtn.addActionListener(e -> gameFrame.undoMove());
+        redoBtn.addActionListener(e -> gameFrame.redoMove());
+
+        // Top row: New Game spans full width
+        JPanel topRow = new JPanel(new GridLayout(1, 1, 0, 0));
+        topRow.setBackground(BG_MAIN);
+        topRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
+        topRow.add(newBtn);
+
+        // Bottom rows: 2×2
+        JPanel grid = new JPanel(new GridLayout(2, 2, 8, 8));
+        grid.setBackground(BG_MAIN);
+        grid.setMaximumSize(new Dimension(Integer.MAX_VALUE, 92));
+        grid.add(undoBtn);
+        grid.add(redoBtn);
+        grid.add(saveBtn);
+        grid.add(loadBtn);
+
+        JPanel wrap = new JPanel();
+        wrap.setLayout(new BoxLayout(wrap, BoxLayout.Y_AXIS));
+        wrap.setBackground(BG_MAIN);
+        wrap.setAlignmentX(LEFT_ALIGNMENT);
+        wrap.add(topRow);
+        wrap.add(Box.createVerticalStrut(8));
+        wrap.add(grid);
+        return wrap;
+    }
+
+    // ── Move History Card ─────────────────────────────────────
+    private JPanel buildMoveHistoryCard() {
+        JPanel card = new JPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setBackground(BG_CARD);
+        card.setBorder(new CompoundBorder(
+            new LineBorder(BORDER_COLOR, 1, true),
+            new EmptyBorder(10, 10, 10, 10)
+        ));
+        card.setAlignmentX(LEFT_ALIGNMENT);
+
+        JLabel title = new JLabel("MOVE HISTORY");
+        title.setFont(new Font("SansSerif", Font.BOLD, 13));
+        title.setForeground(ACCENT_GOLD);
+        title.setAlignmentX(LEFT_ALIGNMENT);
+        card.add(title);
+        card.add(Box.createVerticalStrut(8));
+
+        moveListArea = new JTextArea();
+        moveListArea.setEditable(false);
+        moveListArea.setBackground(new Color(0x1A1A28));
+        moveListArea.setForeground(new Color(0xCCCCCC));
+        moveListArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
+        moveListArea.setLineWrap(false);
+        moveListArea.setBorder(new EmptyBorder(6, 6, 6, 6));
+
+        JScrollPane scroll = new JScrollPane(moveListArea);
+        scroll.setPreferredSize(new Dimension(228, 155));
+        scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 155));
+        scroll.setBorder(new LineBorder(BORDER_COLOR, 1));
+        scroll.setAlignmentX(LEFT_ALIGNMENT);
+
+        // Scroll bar styling
+        scroll.getVerticalScrollBar().setBackground(new Color(0x2A2A3A));
+        scroll.setBackground(new Color(0x1A1A28));
+
+        card.add(scroll);
+        return card;
+    }
+
+    public void updateMoveHistory(java.util.List<String> history) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < history.size(); i++) {
+            if (i % 2 == 0) sb.append(String.format("%3d. ", i / 2 + 1));
+            sb.append(String.format("%-8s", history.get(i)));
+            if (i % 2 == 1) sb.append("\n");
+        }
+        moveListArea.setText(sb.toString());
+        moveListArea.setCaretPosition(moveListArea.getDocument().getLength());
+    }
+
+    // ── Styled button with hover effect ──────────────────────
+    private JButton makeButton(String text, Color baseColor) {
+        JButton btn = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btn.setText(text);
+        btn.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(baseColor);
+        btn.setOpaque(false);      // let our paintComponent handle it
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setBorder(new EmptyBorder(10, 8, 10, 8));
+
+        // Hover brightness effect
+        Color hoverColor = baseColor.brighter();
+        btn.addMouseListener(new MouseAdapter() {
+            @Override public void mouseEntered(MouseEvent e) { btn.setBackground(hoverColor); btn.repaint(); }
+            @Override public void mouseExited (MouseEvent e) { btn.setBackground(baseColor);  btn.repaint(); }
+        });
+        return btn;
+    }
+}

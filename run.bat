@@ -6,11 +6,12 @@ echo ================================
 
 if not exist bin mkdir bin
 
-javac -d bin src\CheckmateX.java src\ChessBoard.java src\ChessAI.java src\GameWindow.java
+dir /s /B src\*.java > sources.txt
+javac -d bin -cp "lib\sqlite-jdbc.jar" @sources.txt
 
 if %ERRORLEVEL% EQU 0 (
     echo Build successful! Starting game...
-    java -cp bin CheckmateX
+    java -cp "bin;lib\sqlite-jdbc.jar" com.checkmatex.main.Main
 ) else (
     echo Build failed. Check the errors above.
     pause

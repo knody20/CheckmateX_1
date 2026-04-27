@@ -1,0 +1,43 @@
+package com.checkmatex.logic;
+
+import com.checkmatex.pieces.Piece;
+import com.checkmatex.utils.Move;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MoveValidator {
+
+    public static List<Move> getLegalMoves(GameState state, int row, int col) {
+        List<Move> legalMoves = new ArrayList<>();
+        Piece piece = state.getPiece(row, col);
+        if (piece == null) return legalMoves;
+
+        List<Move> candidates = piece.getPseudoLegalMoves(state, row, col);
+
+        for (Move move : candidates) {
+            // Step 1: Clone state and apply move
+            GameState tempState = state.copy();
+            MoveManager.applyMoveInternal(tempState, move);
+
+            // Step 2: Check if king is safe
+            if (!CheckDetector.isKingInCheck(tempState, piece.getColor())) {
+                legalMoves.add(move);
+            }
+        }
+        return legalMoves;
+    }
+
+    public static boolean hasAnyLegalMoves(GameState state, int color) {
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                Piece p = state.getPiece(r, c);
+                if (p != null && p.getColor() == color) {
+                    if (!getLegalMoves(state, r, c).isEmpty()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+}

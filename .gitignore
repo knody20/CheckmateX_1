@@ -1,0 +1,13 @@
+# Compiled class files
+/bin/
+sources.txt
+
+# SQLite Database
+*.db
+*.sqlite
+
+# IDE/OS specific files
+.idea/
+.vscode/
+*.iml
+.DS_Store
