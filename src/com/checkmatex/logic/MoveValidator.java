@@ -7,8 +7,8 @@ import java.util.List;
 
 public class MoveValidator {
 
-    public static List<Move> getLegalMoves(GameState state, int row, int col) {
-        List<Move> legalMoves = new ArrayList<>();
+    public static ArrayList<Move> getLegalMoves(GameState state, int row, int col) {
+    ArrayList<Move> legalMoves = new ArrayList<>();
         Piece piece = state.getPiece(row, col);
         if (piece == null) return legalMoves;
 

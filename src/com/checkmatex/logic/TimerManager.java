@@ -1,7 +1,7 @@
 package com.checkmatex.logic;
 
 import javax.swing.Timer;
-import java.awt.event.ActionListener;
+
 
 public class TimerManager {
 

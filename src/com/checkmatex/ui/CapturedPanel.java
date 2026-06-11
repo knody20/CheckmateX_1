@@ -1,30 +1,29 @@
 package com.checkmatex.ui;
 
-import com.checkmatex.pieces.Piece;
-import com.checkmatex.utils.Constants;
+import com.checkmatex.pieces.*;
+import com.checkmatex.utils.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.checkmatex.ui.SidePanel.*;
+import static com.checkmatex.ui.SidePanel.*;                //to resuse sidepanel colors 
 
 public class CapturedPanel extends JPanel {
 
-    private List<Piece> capturedByWhite = new ArrayList<>(); // white captured these black pieces
-    private List<Piece> capturedByBlack = new ArrayList<>(); // black captured these white pieces
+    private ArrayList<Piece> capturedByWhite = new ArrayList<>(); // white captured these black pieces
+    private ArrayList<Piece> capturedByBlack = new ArrayList<>(); // black captured these white pieces
 
-    // Row labels
+    //labels - captured pieces and points gained
     private JLabel whiteSymbolsLabel;
     private JLabel whitePointsLabel;
     private JLabel blackSymbolsLabel;
     private JLabel blackPointsLabel;
-    private JLabel advantageLabel;
+    private JLabel advantageLabel;              //material label
 
     public CapturedPanel() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));           //stacked vertically 
         setBackground(BG_CARD);
         setBorder(new CompoundBorder(
             new LineBorder(BORDER_COLOR, 1, true),
@@ -91,7 +90,7 @@ public class CapturedPanel extends JPanel {
         rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
         rightSide.setBackground(rowBg);
 
-        JLabel symbolsLabel = new JLabel(" — ");
+        JLabel symbolsLabel = new JLabel("None");
         symbolsLabel.setFont(new Font("Serif", Font.PLAIN, 17));
         symbolsLabel.setForeground(new Color(0xCCCCCC));
 
@@ -131,14 +130,14 @@ public class CapturedPanel extends JPanel {
         int wPts = 0;
         StringBuilder wsb = new StringBuilder();
         for (Piece p : capturedByWhite) { wsb.append(p.getUnicodeSymbol()); wPts += p.getPointValue(); }
-        whiteSymbolsLabel.setText(wsb.length() == 0 ? " — " : wsb.toString());
+        whiteSymbolsLabel.setText(wsb.length() == 0 ? "" : wsb.toString());
         whitePointsLabel.setText(wPts > 0 ? "(+" + wPts + ")" : "(+0)");
 
         // Black captures
         int bPts = 0;
         StringBuilder bsb = new StringBuilder();
         for (Piece p : capturedByBlack) { bsb.append(p.getUnicodeSymbol()); bPts += p.getPointValue(); }
-        blackSymbolsLabel.setText(bsb.length() == 0 ? " — " : bsb.toString());
+        blackSymbolsLabel.setText(bsb.length() == 0 ? "" : bsb.toString());
         blackPointsLabel.setText(bPts > 0 ? "(+" + bPts + ")" : "(+0)");
 
         // Advantage

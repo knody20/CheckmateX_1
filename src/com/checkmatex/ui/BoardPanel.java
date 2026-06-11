@@ -1,28 +1,25 @@
 package com.checkmatex.ui;
 
-import com.checkmatex.logic.CheckDetector;
-import com.checkmatex.logic.GameState;
-import com.checkmatex.logic.MoveValidator;
-import com.checkmatex.pieces.Piece;
-import com.checkmatex.utils.Constants;
-import com.checkmatex.utils.Move;
+import com.checkmatex.logic.*;
+import com.checkmatex.pieces.*;
+import com.checkmatex.utils.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.List;
+
+
 
 public class BoardPanel extends JPanel {
 
-    static final Color LIGHT_SQUARE = new Color(238, 216, 183);
+    static final Color LIGHT_SQUARE = new Color(238, 216, 183);            //chessboard colors
     static final Color DARK_SQUARE = new Color(171, 122, 72);
-    static final Color SELECTED_SQ = new Color(100, 180, 100);
-    static final Color MOVE_HINT = new Color(60, 60, 60, 70);
-    static final Color CAPTURE_HINT = new Color(180, 50, 50, 110);
-    static final Color CHECK_SQ = new Color(220, 50, 50, 170);
-    static final Color LAST_MOVE_CLR = new Color(205, 185, 80, 130);
+    static final Color SELECTED_SQ = new Color(100, 180, 100);             //selected piece highlight - green
+    static final Color MOVE_HINT = new Color(60, 60, 60, 70);           //possible move dots
+    static final Color CAPTURE_HINT = new Color(180, 50, 50, 110);      //red capture circles
+    static final Color CHECK_SQ = new Color(220, 50, 50, 170);          //king in check highlight
+    static final Color LAST_MOVE_CLR = new Color(205, 185, 80, 130);    //last move highlight
 
     static final int SQ_SIZE = 70;
 
@@ -31,7 +28,7 @@ public class BoardPanel extends JPanel {
 
     private int selectedRow = -1;
     private int selectedCol = -1;
-    private List<Move> legalMovesForSelected = new ArrayList<>();
+    private ArrayList<Move> legalMovesForSelected = new ArrayList<>();
     private Move lastMove = null;
 
     public BoardPanel(GameFrame gameFrame, GameState gameState) {
@@ -65,13 +62,13 @@ public class BoardPanel extends JPanel {
     private void handleSquareClick(int row, int col) {
         Piece piece = gameState.getPiece(row, col);
 
-        if (selectedRow == -1) {
+        if (selectedRow == -1) {            //First click
             if (piece != null && piece.getColor() == gameState.currentTurn) {
                 selectedRow = row;
                 selectedCol = col;
                 legalMovesForSelected = MoveValidator.getLegalMoves(gameState, row, col);
             }
-        } else {
+        } else {                            //all legal moves
             Move chosenMove = null;
             for (Move m : legalMovesForSelected) {
                 if (m.toRow == row && m.toCol == col) {
@@ -81,7 +78,7 @@ public class BoardPanel extends JPanel {
             }
 
             if (chosenMove != null) {
-                // handle promotion UI here before passing to gameFrame
+                // handle promotion - pawn reaches last row
                 if (piece != null && piece.getType() == Constants.PAWN && (row == 0 || row == 7)) {
                     String[] options = {"Queen", "Rook", "Bishop", "Knight"};
                     int choice = JOptionPane.showOptionDialog(this,
@@ -99,10 +96,8 @@ public class BoardPanel extends JPanel {
                     }
                 }
                 gameFrame.executeMove(chosenMove);
-            } else if (piece != null && piece.getColor() == gameState.currentTurn) {
-                selectedRow = row;
-                selectedCol = col;
-                legalMovesForSelected = MoveValidator.getLegalMoves(gameState, row, col);
+
+            
             } else {
                 selectedRow = -1;
                 selectedCol = -1;
@@ -111,7 +106,7 @@ public class BoardPanel extends JPanel {
         }
         repaint();
     }
-
+    //advanced graphics - called automatically whenever swing redraws the board
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -119,11 +114,11 @@ public class BoardPanel extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        for (int row = 0; row < 8; row++) {
+        for (int row = 0; row < 8; row++) {                     //draws board
             for (int col = 0; col < 8; col++) {
-                int x = col * SQ_SIZE;
+                int x = col * SQ_SIZE;                          //grid position to pixels
                 int y = row * SQ_SIZE;
-                boolean isLight = (row + col) % 2 == 0;
+                boolean isLight = (row + col) % 2 == 0;         //pattern logic sum is even - light square else dark square                   
 
                 g2d.setColor(isLight ? LIGHT_SQUARE : DARK_SQUARE);
                 g2d.fillRect(x, y, SQ_SIZE, SQ_SIZE);
@@ -160,7 +155,7 @@ public class BoardPanel extends JPanel {
                         g2d.drawOval(x + 4, y + 4, SQ_SIZE - 8, SQ_SIZE - 8);
                         g2d.setStroke(new BasicStroke(1));
                     } else {
-                        g2d.setColor(MOVE_HINT);
+                        g2d.setColor(MOVE_HINT);                        //hint color logic
                         int dotSize = 20;
                         g2d.fillOval(x + (SQ_SIZE - dotSize) / 2, y + (SQ_SIZE - dotSize) / 2, dotSize, dotSize);
                     }

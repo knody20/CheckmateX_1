@@ -1,48 +1,43 @@
 package com.checkmatex.ui;
 
-import com.checkmatex.data.DBHandler;
 import com.checkmatex.logic.*;
-import com.checkmatex.pieces.Piece;
-import com.checkmatex.utils.Constants;
-import com.checkmatex.utils.Move;
+import com.checkmatex.pieces.*;
+import com.checkmatex.utils.*;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import javax.swing.*;                           //JFrame and other components
+import javax.swing.border.EmptyBorder;          //give space around components
+import java.awt.*;                              //color and fonts
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class GameFrame extends JFrame {
 
     private GameState gameState;
     private UndoRedoManager undoRedoManager;
     private TimerManager timerManager;
-    private DBHandler dbHandler;
     private BoardPanel boardPanel;
     private SidePanel sidePanel;
 
-    private boolean gameOver = false;
-    private List<String> moveHistory = new ArrayList<>();
+    private boolean gameOver = false;               //when check true after that no moves allowed
+    private ArrayList<String> moveHistory = new ArrayList<>();
     private Move lastMove = null;
 
     public GameFrame() {
-        super("CheckMate X — Professional Edition");
-
-        dbHandler = new DBHandler();
+        super("CheckMate X");
         undoRedoManager = new UndoRedoManager();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout(0, 0));
-        getContentPane().setBackground(new Color(0x181818));
+        setLayout(new BorderLayout(0,0));
+        getContentPane().setBackground(new Color(0x181818));                //for giving background a dark colour
 
-        // ── Top Header bar ──────────────────────────────────
+        // Top Header bar
         add(buildHeader(), BorderLayout.NORTH);
 
-        // ── Initialize game state ───────────────────────────
+        //initialize game state and board
         gameState = new GameState();
         gameState.setupInitialBoard();
 
-        // ── Board (centre) ──────────────────────────────────
+        //Board (Centre)
         boardPanel = new BoardPanel(this, gameState);
         JPanel boardWrap = new JPanel(new GridBagLayout()); // GridBagLayout centres perfectly
         boardWrap.setBackground(new Color(0x181818));
@@ -50,14 +45,12 @@ public class GameFrame extends JFrame {
         boardWrap.add(boardPanel);
         add(boardWrap, BorderLayout.CENTER);
 
-        // ── Side panel (right) ──────────────────────────────
+        //Side panel (right)
         sidePanel = new SidePanel(this);
         add(sidePanel, BorderLayout.EAST);
 
-        // ── Footer status bar ───────────────────────────────
-        add(buildFooter(), BorderLayout.SOUTH);
 
-        // ── Timer default ───────────────────────────────────
+        //Timer default
         initTimers(10);
 
         pack();
@@ -69,17 +62,17 @@ public class GameFrame extends JFrame {
         showNewGameDialog();
     }
 
-    // ── Header ─────────────────────────────────────────────────
+    //Header
     private JPanel buildHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(new Color(0x121212));
         header.setBorder(new EmptyBorder(10, 16, 10, 16));
 
-        JLabel logo = new JLabel("♔  CheckMate X");
+        JLabel logo = new JLabel("CheckMate X");
         logo.setFont(new Font("SansSerif", Font.BOLD, 22));
         logo.setForeground(new Color(0xF0C040));
 
-        JLabel sub = new JLabel("Professional Edition");
+        JLabel sub = new JLabel("Where Algorithms Meet Strategy");
         sub.setFont(new Font("SansSerif", Font.ITALIC, 13));
         sub.setForeground(new Color(0x888899));
 
@@ -92,18 +85,8 @@ public class GameFrame extends JFrame {
         return header;
     }
 
-    // ── Footer ─────────────────────────────────────────────────
-    private JPanel buildFooter() {
-        JPanel footer = new JPanel(new FlowLayout(FlowLayout.LEFT, 14, 5));
-        footer.setBackground(new Color(0x111111));
-        JLabel info = new JLabel("Design & Analysis of Algorithms  |  Java Swing + JDBC + SQLite");
-        info.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        info.setForeground(new Color(0x555566));
-        footer.add(info);
-        return footer;
-    }
 
-    // ── Timer init ─────────────────────────────────────────────
+    // Timer init
     private void initTimers(int minutes) {
         if (timerManager != null) timerManager.stop();
         timerManager = new TimerManager(minutes,
@@ -113,7 +96,7 @@ public class GameFrame extends JFrame {
         sidePanel.timerPanel.updateTimers(timerManager.getWhiteTime(), timerManager.getBlackTime());
     }
 
-    // ── New Game Dialog ────────────────────────────────────────
+    //New Game Dialog
     public void confirmNewGame() {
         int choice = JOptionPane.showConfirmDialog(
                 this,
@@ -135,14 +118,14 @@ public class GameFrame extends JFrame {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
                 null, options, options[1]);
 
-        if (choice < 0) {
+        if (choice < 0) {                                               //if closes the dialog window choice=-1
             if (lastMove == null && moveHistory.isEmpty()) {
-                timerManager.start(Constants.WHITE);
+                timerManager.start(Constants.WHITE);                    //no moves played, start white's timer
             }
             return;
         }
 
-        int mins = 10;
+        int mins = 10;              //default choice=1
         if      (choice == 0) mins = 5;
         else if (choice == 2) mins = 15;
 
@@ -162,7 +145,7 @@ public class GameFrame extends JFrame {
         updateUI();
     }
 
-    // ── Execute Move ───────────────────────────────────────────
+    // Execute Move
     public void executeMove(Move move) {
         if (gameOver) return;
 
@@ -197,23 +180,21 @@ public class GameFrame extends JFrame {
             if (CheckDetector.isKingInCheck(gameState, gameState.currentTurn)) {
                 String winner = (gameState.currentTurn == Constants.WHITE) ? "Black" : "White";
                 JOptionPane.showMessageDialog(this, "Checkmate! " + winner + " wins!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                dbHandler.saveMatchHistory(winner, moveHistory.toString(), "N/A", java.time.LocalDateTime.now().toString());
-            } else {
+               
                 JOptionPane.showMessageDialog(this, "Stalemate! It's a draw.", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                dbHandler.saveMatchHistory("Draw", moveHistory.toString(), "N/A", java.time.LocalDateTime.now().toString());
-            }
+                
         }
     }
+}
 
     private void handleTimeout() {
         gameOver = true;
         String winner = (gameState.currentTurn == Constants.WHITE) ? "Black" : "White";
         JOptionPane.showMessageDialog(this, "Time Out! " + winner + " wins!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-        dbHandler.saveMatchHistory(winner + " (Time)", moveHistory.toString(), "N/A", java.time.LocalDateTime.now().toString());
-        updateUI();
+       
     }
 
-    // ── Undo / Redo ────────────────────────────────────────────
+    // Undo / Redo
     public void undoMove() {
         if (undoRedoManager.canUndo()) {
             gameState = undoRedoManager.undo(gameState);
@@ -234,27 +215,8 @@ public class GameFrame extends JFrame {
         }
     }
 
-    // ── Save / Load ────────────────────────────────────────────
-    public void saveGame() {
-        dbHandler.saveGame("FEN_placeholder", gameState.currentTurn,
-                timerManager.getWhiteTime(), timerManager.getBlackTime(),
-                "rights", "ep", "cw", "cb", moveHistory.toString());
-        JOptionPane.showMessageDialog(this, "Game Saved!", "Save", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    public void loadGame() {
-        DBHandler.SavedGameData data = dbHandler.loadGame();
-        if (data != null) {
-            JOptionPane.showMessageDialog(this,
-                    "Load successful!\n(Full board restoration requires FEN serialisation.)",
-                    "Load", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "No saved game found.", "Load", JOptionPane.WARNING_MESSAGE);
-        }
-    }
-
-    // ── Helpers ────────────────────────────────────────────────
-    private String generateNotation(Move move) {
+    // Helpers
+    private String generateNotation(Move move) {                            //converts a move into chess notation
         if (move.flag == Constants.FLAG_CASTLE_KINGSIDE)  return "O-O";
         if (move.flag == Constants.FLAG_CASTLE_QUEENSIDE) return "O-O-O";
         String f = "abcdefgh";

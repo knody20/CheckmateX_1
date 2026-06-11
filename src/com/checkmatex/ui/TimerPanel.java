@@ -1,21 +1,17 @@
 package com.checkmatex.ui;
 
 import com.checkmatex.logic.TimerManager;
-
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
-
-import static com.checkmatex.ui.SidePanel.*;
+import static com.checkmatex.ui.SidePanel.*;                //directly importing constants from SidePanel
 
 public class TimerPanel extends JPanel {
 
-    private JLabel statusLabel;
+    private JLabel statusLabel;                 //status like whose turn and check
     private JLabel whiteTimeLabel;
     private JLabel blackTimeLabel;
-    private JLabel whiteTag;
-    private JLabel blackTag;
-
+   
     public TimerPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(BG_CARD);
@@ -34,7 +30,6 @@ public class TimerPanel extends JPanel {
         // Status / turn label
         statusLabel = new JLabel("White's turn to move");
         statusLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
-        statusLabel.setForeground(TEXT_LIGHT);
         statusLabel.setAlignmentX(LEFT_ALIGNMENT);
 
         add(heading);
@@ -42,7 +37,7 @@ public class TimerPanel extends JPanel {
         add(statusLabel);
         add(Box.createVerticalStrut(14));
 
-        // ── Two timer rows: Black on top, White on bottom ───
+        // Two timer rows: Black on top, White on bottom
         add(buildTimerRow(false)); // Black
         add(Box.createVerticalStrut(8));
         add(buildTimerRow(true));  // White
@@ -89,7 +84,7 @@ public class TimerPanel extends JPanel {
         whiteTimeLabel.setText(TimerManager.formatTime(whiteSeconds));
         blackTimeLabel.setText(TimerManager.formatTime(blackSeconds));
 
-        // Warn when < 60s
+        // Warn when < 60s i.e red color
         whiteTimeLabel.setForeground(whiteSeconds < 60 ? new Color(0xFF6B6B) : new Color(0xF8F8E8));
         blackTimeLabel.setForeground(blackSeconds < 60 ? new Color(0xFF6B6B) : new Color(0xAAAAAA));
     }
