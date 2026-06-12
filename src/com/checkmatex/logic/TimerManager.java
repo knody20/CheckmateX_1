@@ -1,16 +1,16 @@
 package com.checkmatex.logic;
 
-import javax.swing.Timer;
+import javax.swing.Timer;                                  //timer class 
 
 
 public class TimerManager {
 
-    private int whiteTimeRemaining; // in seconds
-    private int blackTimeRemaining; // in seconds
-    private Timer timer;
-    private int activeColor;
-    private Runnable updateCallback;
-    private Runnable timeoutCallback;
+    private int whiteTimeRemaining;             // in seconds
+    private int blackTimeRemaining; 
+    private Timer timer;                        //swing timer obj - tick, decrease time
+    private int activeColor;                    //whose timer is running
+    private Runnable updateCallback;            //ui function - refresh timer display runs every second
+    private Runnable timeoutCallback;           //to end or decide winner, ui function
 
     public TimerManager(int initialMinutes, Runnable updateCallback, Runnable timeoutCallback) {
         this.whiteTimeRemaining = initialMinutes * 60;
@@ -27,7 +27,7 @@ public class TimerManager {
                 blackTimeRemaining--;
                 if (blackTimeRemaining <= 0) handleTimeout();
             }
-            if (updateCallback != null) updateCallback.run();
+            if (updateCallback != null) updateCallback.run();               //refresh every sec
         });
     }
 
@@ -60,7 +60,7 @@ public class TimerManager {
         if (updateCallback != null) updateCallback.run();
     }
 
-    public static String formatTime(int seconds) {
+    public static String formatTime(int seconds) {                  //convert in mm : ss format
         int m = seconds / 60;
         int s = seconds % 60;
         return String.format("%02d:%02d", m, s);

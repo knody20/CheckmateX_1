@@ -1,11 +1,11 @@
 package com.checkmatex.logic;
 
-import java.util.Stack;
+import java.util.Stack;                                 //LIFO
 
 public class UndoRedoManager {
     
-    private Stack<GameState> undoStack;
-    private Stack<GameState> redoStack;
+    private Stack<GameState> undoStack;                 //stores older moves
+    private Stack<GameState> redoStack;                 //stores states that were undo
 
     public UndoRedoManager() {
         undoStack = new Stack<>();
