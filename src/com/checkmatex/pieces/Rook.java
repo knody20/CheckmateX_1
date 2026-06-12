@@ -4,7 +4,7 @@ import com.checkmatex.logic.GameState;
 import com.checkmatex.utils.Constants;
 import com.checkmatex.utils.Move;
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class Rook extends Piece {
 
@@ -13,8 +13,8 @@ public class Rook extends Piece {
     }
 
     @Override
-    public List<Move> getPseudoLegalMoves(GameState state, int r, int c) {
-        List<Move> moves = new ArrayList<>();
+    public ArrayList<Move> getPseudoLegalMoves(GameState state, int r, int c) {
+        ArrayList<Move> moves = new ArrayList<>();
         int[][] dirs = {{-1,0},{1,0},{0,-1},{0,1}};
         for (int[] d : dirs) {
             int nr = r + d[0], nc = c + d[1];

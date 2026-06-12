@@ -4,7 +4,7 @@ import com.checkmatex.logic.GameState;
 import com.checkmatex.utils.Constants;
 import com.checkmatex.utils.Move;
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class Pawn extends Piece {
 
@@ -13,8 +13,8 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public List<Move> getPseudoLegalMoves(GameState state, int r, int c) {
-        List<Move> moves = new ArrayList<>();
+    public ArrayList<Move> getPseudoLegalMoves(GameState state, int r, int c) {
+        ArrayList<Move> moves = new ArrayList<>();
         int dir = (color == Constants.WHITE) ? -1 : 1;
         int startRow = (color == Constants.WHITE) ? 6 : 1;
         int promoRow = (color == Constants.WHITE) ? 0 : 7;
