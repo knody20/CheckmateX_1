@@ -173,19 +173,65 @@ public class GameFrame extends JFrame {
         updateUI();
     }
 
+    private boolean isInsufficientMaterial() {
+    int pieceCount = 0;
+
+    for (int r = 0; r < 8; r++) {
+        for (int c = 0; c < 8; c++) {
+            if (gameState.board[r][c] != null) {
+                pieceCount++;
+            }
+        }
+    }
+
+    return pieceCount == 2; // only the two kings remain
+}
+
     private void checkGameEnd() {
-        if (!MoveValidator.hasAnyLegalMoves(gameState, gameState.currentTurn)) {
-            gameOver = true;
-            timerManager.stop();
-            if (CheckDetector.isKingInCheck(gameState, gameState.currentTurn)) {
-                String winner = (gameState.currentTurn == Constants.WHITE) ? "Black" : "White";
-                JOptionPane.showMessageDialog(this, "Checkmate! " + winner + " wins!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-               
-                JOptionPane.showMessageDialog(this, "Stalemate! It's a draw.", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                
+
+    if (isInsufficientMaterial()) {
+        gameOver = true;
+        timerManager.stop();
+
+        JOptionPane.showMessageDialog(
+            this,
+            "Draw by insufficient material.",
+            "Game Over",
+            JOptionPane.INFORMATION_MESSAGE
+        );
+        return;
+    }
+
+    if (!MoveValidator.hasAnyLegalMoves(gameState, gameState.currentTurn)) {
+
+        gameOver = true;
+        timerManager.stop();
+
+        if (CheckDetector.isKingInCheck(gameState, gameState.currentTurn)) {
+
+            String winner = (gameState.currentTurn == Constants.WHITE)
+                    ? "Black"
+                    : "White";
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Checkmate! " + winner + " wins!",
+                "Game Over",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+
+        } else {
+
+            JOptionPane.showMessageDialog(
+                this,
+                "Stalemate! It's a draw.",
+                "Game Over",
+                JOptionPane.INFORMATION_MESSAGE
+            );
         }
     }
 }
+
 
     private void handleTimeout() {
         gameOver = true;
