@@ -1,12 +1,12 @@
 package com.checkmatex.pieces;
 
-import com.checkmatex.logic.GameState;
-import com.checkmatex.utils.Move;
-import java.util.List;
+import com.checkmatex.logic.*;
+import com.checkmatex.utils.*;
+import java.util.ArrayList;
 
 public abstract class Piece {
     protected int color;
-    protected int type;
+    protected int type;                 
     protected int pointValue;
     protected String unicodeSymbol;
 
@@ -17,12 +17,15 @@ public abstract class Piece {
         this.unicodeSymbol = unicodeSymbol;
     }
 
+    //getters
     public int getColor() { return color; }
     public int getType() { return type; }
     public int getPointValue() { return pointValue; }
     public String getUnicodeSymbol() { return unicodeSymbol; }
-
-    public abstract List<Move> getPseudoLegalMoves(GameState state, int row, int col);
+   
+    //forcing all subclass to implement this method
+    public abstract ArrayList<Move> getPseudoLegalMoves(GameState state, int row, int col);
     
+    //safety for undo redo practices - before changing make a copy
     public abstract Piece copy();
 }

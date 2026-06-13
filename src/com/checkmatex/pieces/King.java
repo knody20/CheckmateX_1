@@ -4,7 +4,7 @@ import com.checkmatex.logic.GameState;
 import com.checkmatex.utils.Constants;
 import com.checkmatex.utils.Move;
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class King extends Piece {
 
@@ -13,8 +13,8 @@ public class King extends Piece {
     }
 
     @Override
-    public List<Move> getPseudoLegalMoves(GameState state, int r, int c) {
-        List<Move> moves = new ArrayList<>();
+    public ArrayList<Move> getPseudoLegalMoves(GameState state, int r, int c) {
+        ArrayList<Move> moves = new ArrayList<>();
         
         for (int dr = -1; dr <= 1; dr++) {
             for (int dc = -1; dc <= 1; dc++) {
