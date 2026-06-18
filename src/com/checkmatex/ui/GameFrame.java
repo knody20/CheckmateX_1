@@ -56,7 +56,7 @@ public class GameFrame extends JFrame {
         pack();
         setMinimumSize(getPreferredSize());
         setLocationRelativeTo(null);
-        setResizable(true);
+        setResizable(false );
         setVisible(true);
 
         showNewGameDialog();
@@ -114,7 +114,7 @@ public class GameFrame extends JFrame {
     public void showNewGameDialog() {
         String[] options = {"5 min", "10 min", "15 min"};
         int choice = JOptionPane.showOptionDialog(this,
-                "Select Time Control:", "New Game",
+                "Choose the game duration:", "New Game",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
                 null, options, options[1]);
 

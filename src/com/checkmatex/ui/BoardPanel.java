@@ -1,3 +1,4 @@
+//BOARD PANEL
 package com.checkmatex.ui;
 
 import com.checkmatex.logic.*;

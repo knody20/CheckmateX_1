@@ -22,7 +22,7 @@ public class TimerPanel extends JPanel {
         setAlignmentX(LEFT_ALIGNMENT);
 
         // Section heading
-        JLabel heading = new JLabel("GAME STATUS");
+        JLabel heading = new JLabel("MATCH STATUS");
         heading.setFont(new Font("SansSerif", Font.BOLD, 13));
         heading.setForeground(ACCENT_GOLD);
         heading.setAlignmentX(LEFT_ALIGNMENT);

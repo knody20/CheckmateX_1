@@ -8,149 +8,175 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-import static com.checkmatex.ui.SidePanel.*;                //to resuse sidepanel colors 
+import static com.checkmatex.ui.SidePanel.*;
 
 public class CapturedPanel extends JPanel {
 
-    private ArrayList<Piece> capturedByWhite = new ArrayList<>(); // white captured these black pieces
-    private ArrayList<Piece> capturedByBlack = new ArrayList<>(); // black captured these white pieces
+    private final ArrayList<Piece> capturedByWhite = new ArrayList<>();
+    private final ArrayList<Piece> capturedByBlack = new ArrayList<>();
 
-    //labels - captured pieces and points gained
     private JLabel whiteSymbolsLabel;
     private JLabel whitePointsLabel;
     private JLabel blackSymbolsLabel;
     private JLabel blackPointsLabel;
-    private JLabel advantageLabel;              //material label
+    private JLabel advantageLabel;
 
     public CapturedPanel() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));           //stacked vertically 
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(BG_CARD);
+
         setBorder(new CompoundBorder(
-            new LineBorder(BORDER_COLOR, 1, true),
-            new EmptyBorder(12, 12, 12, 12)
+                new LineBorder(BORDER_COLOR, 1, true),
+                new EmptyBorder(15, 15, 15, 15)
         ));
+
         setAlignmentX(LEFT_ALIGNMENT);
 
-        // Heading
-        JLabel heading = new JLabel("CAPTURED PIECES");
-        heading.setFont(new Font("SansSerif", Font.BOLD, 13));
+        JLabel heading = new JLabel("♟ CAPTURED PIECES");
+        heading.setFont(new Font("SansSerif", Font.BOLD, 15));
         heading.setForeground(ACCENT_GOLD);
-        heading.setAlignmentX(LEFT_ALIGNMENT);
+        heading.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         add(heading);
-        add(Box.createVerticalStrut(10));
-
-        // White row
-        add(buildPlayerRow(true));
-        add(Box.createVerticalStrut(8));
-
-        // Black row
-        add(buildPlayerRow(false));
         add(Box.createVerticalStrut(12));
 
-        // Divider
-        JSeparator sep = new JSeparator();
-        sep.setForeground(BORDER_COLOR);
-        sep.setBackground(BORDER_COLOR);
-        sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
-        add(sep);
+        add(buildPlayerRow(true));
+
         add(Box.createVerticalStrut(10));
 
-        // Material advantage
-        advantageLabel = new JLabel("Material: Even");
+        add(buildPlayerRow(false));
+
+        add(Box.createVerticalStrut(12));
+
+        JSeparator separator = new JSeparator();
+        separator.setForeground(BORDER_COLOR);
+        separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+
+        add(separator);
+
+        add(Box.createVerticalStrut(12));
+
+        advantageLabel = new JLabel("Material Advantage : Even");
         advantageLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
-        advantageLabel.setForeground(new Color(0x50C878)); // emerald green
-        advantageLabel.setAlignmentX(LEFT_ALIGNMENT);
+        advantageLabel.setForeground(new Color(80, 200, 120));
+        advantageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         add(advantageLabel);
     }
 
-    private JPanel buildPlayerRow(boolean isWhite) {
-        Color rowBg = isWhite ? new Color(0x343424) : new Color(0x242434);
-        Color tagFg = isWhite ? new Color(0xF0F0F0) : new Color(0xAAAAAA);
-        Color tagBg = isWhite ? new Color(0x5A5A3A) : new Color(0x3A3A5A);
+    private JPanel buildPlayerRow(boolean whiteSide) {
 
-        JPanel row = new JPanel(new BorderLayout(6, 0));
-        row.setBackground(rowBg);
+        Color background = whiteSide
+                ? new Color(54, 54, 42)
+                : new Color(42, 42, 54);
+
+        JPanel row = new JPanel(new BorderLayout(10, 0));
+
+        row.setBackground(background);
+
         row.setBorder(new CompoundBorder(
-            new LineBorder(isWhite ? new Color(0x6A6A4A) : new Color(0x4A4A6A), 1, true),
-            new EmptyBorder(8, 10, 8, 10)
+                new LineBorder(BORDER_COLOR, 1, true),
+                new EmptyBorder(8, 10, 8, 10)
         ));
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 52));
-        row.setAlignmentX(LEFT_ALIGNMENT);
 
-        // Tag
-        JLabel tag = new JLabel(isWhite ? "WHITE WON" : "BLACK WON");
-        tag.setFont(new Font("SansSerif", Font.BOLD, 10));
-        tag.setForeground(tagFg);
-        tag.setBackground(tagBg);
-        tag.setOpaque(true);
-        tag.setBorder(new EmptyBorder(2, 6, 2, 6));
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 55));
 
-        // Symbols + points in a vertical sub-panel
-        JPanel rightSide = new JPanel();
-        rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
-        rightSide.setBackground(rowBg);
+        JLabel title = new JLabel(
+                whiteSide ? "WHITE CAPTURED" : "BLACK CAPTURED"
+        );
 
-        JLabel symbolsLabel = new JLabel("None");
-        symbolsLabel.setFont(new Font("Serif", Font.PLAIN, 17));
-        symbolsLabel.setForeground(new Color(0xCCCCCC));
+        title.setFont(new Font("SansSerif", Font.BOLD, 11));
+        title.setForeground(Color.WHITE);
 
-        JLabel pointsLabel = new JLabel("(+0)");
-        pointsLabel.setFont(new Font("SansSerif", Font.BOLD, 11));
-        pointsLabel.setForeground(new Color(0x888899));
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setBackground(background);
 
-        rightSide.add(symbolsLabel);
-        rightSide.add(pointsLabel);
+        JLabel symbols = new JLabel("");
+        symbols.setFont(new Font("Serif", Font.PLAIN, 20));
+        symbols.setForeground(Color.WHITE);
 
-        row.add(tag,       BorderLayout.WEST);
-        row.add(rightSide, BorderLayout.EAST);
+        JLabel points = new JLabel("(+0)");
+        points.setFont(new Font("SansSerif", Font.BOLD, 11));
+        points.setForeground(new Color(180, 180, 180));
 
-        if (isWhite) { whiteSymbolsLabel = symbolsLabel; whitePointsLabel = pointsLabel; }
-        else         { blackSymbolsLabel = symbolsLabel; blackPointsLabel = pointsLabel; }
+        infoPanel.add(symbols);
+        infoPanel.add(points);
+
+        row.add(title, BorderLayout.WEST);
+        row.add(infoPanel, BorderLayout.EAST);
+
+        if (whiteSide) {
+            whiteSymbolsLabel = symbols;
+            whitePointsLabel = points;
+        } else {
+            blackSymbolsLabel = symbols;
+            blackPointsLabel = points;
+        }
 
         return row;
     }
 
     public void addCapturedPiece(Piece piece) {
+
         if (piece.getColor() == Constants.BLACK) {
             capturedByWhite.add(piece);
         } else {
             capturedByBlack.add(piece);
         }
+
         updateDisplay();
     }
 
     public void clear() {
+
         capturedByWhite.clear();
         capturedByBlack.clear();
+
         updateDisplay();
     }
 
     private void updateDisplay() {
-        // White captures
-        int wPts = 0;
-        StringBuilder wsb = new StringBuilder();
-        for (Piece p : capturedByWhite) { wsb.append(p.getUnicodeSymbol()); wPts += p.getPointValue(); }
-        whiteSymbolsLabel.setText(wsb.length() == 0 ? "" : wsb.toString());
-        whitePointsLabel.setText(wPts > 0 ? "(+" + wPts + ")" : "(+0)");
 
-        // Black captures
-        int bPts = 0;
-        StringBuilder bsb = new StringBuilder();
-        for (Piece p : capturedByBlack) { bsb.append(p.getUnicodeSymbol()); bPts += p.getPointValue(); }
-        blackSymbolsLabel.setText(bsb.length() == 0 ? "" : bsb.toString());
-        blackPointsLabel.setText(bPts > 0 ? "(+" + bPts + ")" : "(+0)");
+        int whiteScore = 0;
+        StringBuilder whitePieces = new StringBuilder();
 
-        // Advantage
-        int diff = wPts - bPts;
-        if (diff > 0) {
-            advantageLabel.setText("Material: White +" + diff);
-            advantageLabel.setForeground(new Color(0xF0F0F0));
-        } else if (diff < 0) {
-            advantageLabel.setText("Material: Black +" + Math.abs(diff));
-            advantageLabel.setForeground(new Color(0xAAAAAA));
+        for (Piece piece : capturedByWhite) {
+            whitePieces.append(piece.getUnicodeSymbol()).append(" ");
+            whiteScore += piece.getPointValue();
+        }
+
+        whiteSymbolsLabel.setText(whitePieces.toString());
+        whitePointsLabel.setText("(+" + whiteScore + ")");
+
+        int blackScore = 0;
+        StringBuilder blackPieces = new StringBuilder();
+
+        for (Piece piece : capturedByBlack) {
+            blackPieces.append(piece.getUnicodeSymbol()).append(" ");
+            blackScore += piece.getPointValue();
+        }
+
+        blackSymbolsLabel.setText(blackPieces.toString());
+        blackPointsLabel.setText("(+" + blackScore + ")");
+
+        int difference = whiteScore - blackScore;
+
+        if (difference > 0) {
+
+            advantageLabel.setText("Material Advantage : White +" + difference);
+            advantageLabel.setForeground(new Color(144, 238, 144));
+
+        } else if (difference < 0) {
+
+            advantageLabel.setText("Material Advantage : Black +" + Math.abs(difference));
+            advantageLabel.setForeground(new Color(255, 182, 193));
+
         } else {
-            advantageLabel.setText("Material: Even");
-            advantageLabel.setForeground(new Color(0x50C878));
+
+            advantageLabel.setText("Material Advantage : Even");
+            advantageLabel.setForeground(new Color(135, 206, 250));
         }
     }
 }

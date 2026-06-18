@@ -8,16 +8,16 @@ import java.awt.event.MouseEvent;               //hover events
 
 public class SidePanel extends JPanel {
 
-    // Design Tokens
-    static final Color BG_MAIN      = new Color(0x1E1E1E);
-    static final Color BG_CARD      = new Color(0x2A2A3A);
-    static final Color ACCENT_GOLD  = new Color(0xF0C040);
-    static final Color BORDER_COLOR = new Color(0x44445A);
+    // Change theme colors
+static final Color BG_MAIN      = new Color(30, 32, 40);
+static final Color BG_CARD      = new Color(48, 52, 66);
+static final Color ACCENT_GOLD  = new Color(255, 196, 0);
+static final Color BORDER_COLOR = new Color(75, 78, 95);
 
-    // Button colours
-    static final Color BTN_NEW_GAME = new Color(0x2E86DE);
-    static final Color BTN_UNDO     = new Color(0xE67E22);
-    static final Color BTN_REDO     = new Color(0xF39C12);
+// Change button colors
+static final Color BTN_NEW_GAME = new Color(52, 152, 219);
+static final Color BTN_UNDO     = new Color(46, 204, 113);
+static final Color BTN_REDO     = new Color(155, 89, 182);
 
     private GameFrame gameFrame;
     public TimerPanel timerPanel;
