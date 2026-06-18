@@ -29,7 +29,7 @@ static final Color BTN_REDO     = new Color(155, 89, 182);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(BG_MAIN);
-        setPreferredSize(new Dimension(250, 600));
+        setPreferredSize(new Dimension(330, 680));
         setBorder(new EmptyBorder(12, 10, 12, 10));
 
         add(buildSectionLabel("CONTROLS"));
@@ -52,7 +52,9 @@ static final Color BTN_REDO     = new Color(155, 89, 182);
         JLabel lbl = new JLabel(text);
         lbl.setFont(new Font("SansSerif", Font.BOLD, 11));
         lbl.setForeground(new Color(0x888899));
-        lbl.setAlignmentX(LEFT_ALIGNMENT);
+        lbl.setHorizontalAlignment(SwingConstants.CENTER);
+        lbl.setAlignmentX(CENTER_ALIGNMENT);
+        lbl.setMaximumSize(new Dimension(Integer.MAX_VALUE, lbl.getPreferredSize().height));
         return lbl;
     }
 
@@ -96,26 +98,35 @@ static final Color BTN_REDO     = new Color(155, 89, 182);
                 new LineBorder(BORDER_COLOR, 1, true),
                 new EmptyBorder(10, 10, 10, 10)
         ));
-        card.setAlignmentX(LEFT_ALIGNMENT);
+        card.setAlignmentX(CENTER_ALIGNMENT);
+        card.setPreferredSize(new Dimension(270, 250));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
         JLabel title = new JLabel("MOVE HISTORY");
         title.setFont(new Font("SansSerif", Font.BOLD, 13));
         title.setForeground(ACCENT_GOLD);
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        title.setAlignmentX(CENTER_ALIGNMENT);
+        title.setMaximumSize(new Dimension(Integer.MAX_VALUE, title.getPreferredSize().height));
         card.add(title);
         card.add(Box.createVerticalStrut(8));
 
         moveListArea = new JTextArea();
         moveListArea.setEditable(false);
         moveListArea.setBackground(new Color(0x1A1A28));
-        moveListArea.setForeground(new Color(0xCCCCCC));
+        moveListArea.setForeground(new Color(0xF2F2F2));
         moveListArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
         moveListArea.setLineWrap(false);
+        moveListArea.setWrapStyleWord(false);
+        moveListArea.setRows(12);
         moveListArea.setBorder(new EmptyBorder(6, 6, 6, 6));
 
         JScrollPane scroll = new JScrollPane(moveListArea);
-        scroll.setPreferredSize(new Dimension(228, 155));
-        scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 155));
+        scroll.setPreferredSize(new Dimension(248, 190));
+        scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 190));
         scroll.setBorder(new LineBorder(BORDER_COLOR, 1));
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         card.add(scroll);
         return card;

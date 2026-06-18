@@ -28,15 +28,18 @@ public class CapturedPanel extends JPanel {
 
         setBorder(new CompoundBorder(
                 new LineBorder(BORDER_COLOR, 1, true),
-                new EmptyBorder(15, 15, 15, 15)
+                new EmptyBorder(10, 8, 10, 8)
         ));
 
-        setAlignmentX(LEFT_ALIGNMENT);
+        setAlignmentX(CENTER_ALIGNMENT);
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
         JLabel heading = new JLabel("♟ CAPTURED PIECES");
-        heading.setFont(new Font("SansSerif", Font.BOLD, 15));
+        heading.setFont(new Font("SansSerif", Font.BOLD, 13));
         heading.setForeground(ACCENT_GOLD);
-        heading.setAlignmentX(Component.LEFT_ALIGNMENT);
+        heading.setHorizontalAlignment(SwingConstants.CENTER);
+        heading.setAlignmentX(Component.CENTER_ALIGNMENT);
+        heading.setMaximumSize(new Dimension(Integer.MAX_VALUE, heading.getPreferredSize().height));
 
         add(heading);
         add(Box.createVerticalStrut(12));
@@ -58,9 +61,11 @@ public class CapturedPanel extends JPanel {
         add(Box.createVerticalStrut(12));
 
         advantageLabel = new JLabel("Material Advantage : Even");
-        advantageLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
-        advantageLabel.setForeground(new Color(80, 200, 120));
-        advantageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        advantageLabel.setFont(new Font("SansSerif", Font.BOLD, 11));
+        advantageLabel.setForeground(new Color(80, 220, 140));
+        advantageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        advantageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        advantageLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, advantageLabel.getPreferredSize().height));
 
         add(advantageLabel);
     }
@@ -71,41 +76,57 @@ public class CapturedPanel extends JPanel {
                 ? new Color(54, 54, 42)
                 : new Color(42, 42, 54);
 
-        JPanel row = new JPanel(new BorderLayout(10, 0));
+        JPanel row = new JPanel(new GridBagLayout());
 
         row.setBackground(background);
 
         row.setBorder(new CompoundBorder(
                 new LineBorder(BORDER_COLOR, 1, true),
-                new EmptyBorder(8, 10, 8, 10)
+                new EmptyBorder(6, 8, 6, 8)
         ));
 
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 55));
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
         JLabel title = new JLabel(
                 whiteSide ? "WHITE CAPTURED" : "BLACK CAPTURED"
         );
 
-        title.setFont(new Font("SansSerif", Font.BOLD, 11));
+        title.setFont(new Font("SansSerif", Font.BOLD, 10));
         title.setForeground(Color.WHITE);
+        title.setHorizontalAlignment(SwingConstants.LEFT);
 
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBackground(background);
+        infoPanel.setOpaque(false);
 
         JLabel symbols = new JLabel("");
-        symbols.setFont(new Font("Serif", Font.PLAIN, 20));
+        symbols.setFont(new Font("Serif", Font.PLAIN, 16));
         symbols.setForeground(Color.WHITE);
+        symbols.setHorizontalAlignment(SwingConstants.RIGHT);
 
         JLabel points = new JLabel("(+0)");
-        points.setFont(new Font("SansSerif", Font.BOLD, 11));
+        points.setFont(new Font("SansSerif", Font.BOLD, 10));
         points.setForeground(new Color(180, 180, 180));
+        points.setHorizontalAlignment(SwingConstants.RIGHT);
 
         infoPanel.add(symbols);
         infoPanel.add(points);
 
-        row.add(title, BorderLayout.WEST);
-        row.add(infoPanel, BorderLayout.EAST);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0, 0, 0, 8);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        row.add(title, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.anchor = GridBagConstraints.EAST;
+        row.add(infoPanel, gbc);
 
         if (whiteSide) {
             whiteSymbolsLabel = symbols;

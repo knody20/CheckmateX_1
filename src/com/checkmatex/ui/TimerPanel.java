@@ -17,20 +17,24 @@ public class TimerPanel extends JPanel {
         setBackground(BG_CARD);
         setBorder(new CompoundBorder(
             new LineBorder(BORDER_COLOR, 1, true),
-            new EmptyBorder(12, 12, 12, 12)
+            new EmptyBorder(10, 10, 10, 10)
         ));
-        setAlignmentX(LEFT_ALIGNMENT);
+        setAlignmentX(CENTER_ALIGNMENT);
 
         // Section heading
         JLabel heading = new JLabel("MATCH STATUS");
-        heading.setFont(new Font("SansSerif", Font.BOLD, 13));
+        heading.setFont(new Font("SansSerif", Font.BOLD, 12));
         heading.setForeground(ACCENT_GOLD);
-        heading.setAlignmentX(LEFT_ALIGNMENT);
+        heading.setHorizontalAlignment(SwingConstants.CENTER);
+        heading.setAlignmentX(CENTER_ALIGNMENT);
+        heading.setMaximumSize(new Dimension(Integer.MAX_VALUE, heading.getPreferredSize().height));
 
         // Status / turn label
         statusLabel = new JLabel("White's turn to move");
-        statusLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
-        statusLabel.setAlignmentX(LEFT_ALIGNMENT);
+        statusLabel.setFont(new Font("SansSerif", Font.BOLD, 13));
+        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        statusLabel.setAlignmentX(CENTER_ALIGNMENT);
+        statusLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, statusLabel.getPreferredSize().height));
 
         add(heading);
         add(Box.createVerticalStrut(10));
@@ -55,12 +59,12 @@ public class TimerPanel extends JPanel {
             new LineBorder(isWhite ? new Color(0x7A7A5A) : new Color(0x4A4A6A), 1, true),
             new EmptyBorder(8, 12, 8, 12)
         ));
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
-        row.setAlignmentX(LEFT_ALIGNMENT);
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
+        row.setAlignmentX(CENTER_ALIGNMENT);
 
         // Player tag pill
         JLabel tag = new JLabel(isWhite ? "WHITE" : "BLACK");
-        tag.setFont(new Font("SansSerif", Font.BOLD, 11));
+        tag.setFont(new Font("SansSerif", Font.BOLD, 10));
         tag.setForeground(tagFg);
         tag.setBackground(tagBg);
         tag.setOpaque(true);
@@ -68,7 +72,7 @@ public class TimerPanel extends JPanel {
 
         // Time display
         JLabel timeLabel = new JLabel("10:00");
-        timeLabel.setFont(new Font("Monospaced", Font.BOLD, 22));
+        timeLabel.setFont(new Font("Monospaced", Font.BOLD, 18));
         timeLabel.setForeground(isWhite ? new Color(0xF8F8E8) : new Color(0xAAAAAA));
 
         row.add(tag, BorderLayout.WEST);
